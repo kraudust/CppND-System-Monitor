@@ -2,11 +2,17 @@
 #define PROCESSOR_H
 
 class Processor {
- public:
-  float Utilization();  // TODO: See src/processor.cpp
+public:
+  /**
+   * @brief This returns the processor utilization (0->1)
+   *
+   * @return processor utilization (0->1)
+   */
+  float Utilization();
 
-  // TODO: Declare any necessary private members
- private:
+private:
+  float prev_tot_jiffies_{0};
+  float prev_act_jiffies_{0};
 };
 
 #endif
