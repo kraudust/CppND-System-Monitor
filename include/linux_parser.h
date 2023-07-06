@@ -35,6 +35,7 @@ T findValueByKey(std::string const &keyFilter, std::string const &filename)
         }
       }
     }
+    stream.close();
   }
   return value;
 }
@@ -50,6 +51,7 @@ T getValueOfFile(std::string const &filename)
     std::getline(stream, line);
     std::istringstream linestream(line);
     linestream >> value;
+    stream.close();
   }
   return value;
 }

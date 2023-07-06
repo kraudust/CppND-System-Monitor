@@ -12,9 +12,9 @@ std::string LinuxParser::OperatingSystem()
   std::string line;
   std::string key;
   std::string value;
-  std::ifstream filestream(kOSPath);
-  if (filestream.is_open()) {
-    while (std::getline(filestream, line)) {
+  std::ifstream stream(kOSPath);
+  if (stream.is_open()) {
+    while (std::getline(stream, line)) {
       std::replace(line.begin(), line.end(), ' ', '_');
       std::replace(line.begin(), line.end(), '=', ' ');
       std::replace(line.begin(), line.end(), '"', ' ');
@@ -22,10 +22,12 @@ std::string LinuxParser::OperatingSystem()
       while (linestream >> key >> value) {
         if (key == "PRETTY_NAME") {
           std::replace(value.begin(), value.end(), '_', ' ');
+          stream.close();
           return value;
         }
       }
     }
+    stream.close();
   }
   return value;
 }
@@ -39,6 +41,7 @@ std::string LinuxParser::Kernel()
     std::getline(stream, line);
     std::istringstream linestream(line);
     linestream >> os >> version >> kernel;
+    stream.close();
   }
   return kernel;
 }
@@ -66,8 +69,8 @@ std::vector<int> LinuxParser::Pids()
 
 float LinuxParser::MemoryUtilization()
 {
-  std::string memTotal = "MemTotal:";
-  std::string memAvailable = "MemAvailable:";
+  const std::string memTotal = "MemTotal:";
+  const std::string memAvailable = "MemAvailable:";
   float mem_total = findValueByKey<float>(memTotal, kMeminfoFilename);
   float mem_available = findValueByKey<float>(memAvailable, kMeminfoFilename);
   return (mem_total - mem_available) / mem_total;
@@ -75,8 +78,7 @@ float LinuxParser::MemoryUtilization()
 
 long LinuxParser::UpTime()
 {
-  std::string filename{kUptimeFilename};
-  return getValueOfFile<long>(filename);
+  return getValueOfFile<long>(kUptimeFilename);
 }
 
 long LinuxParser::Jiffies()
@@ -104,6 +106,7 @@ long LinuxParser::ActiveJiffies(int pid)
     linestream >> stime; // 14th element (0 indexed)
     linestream >> cutime; // 15th element (0 indexed)
     linestream >> cstime; // 16th element (0 indexed)
+    stream.close();
   }
   return utime + stime + cutime + cstime;
 }
@@ -137,41 +140,42 @@ std::vector<long> LinuxParser::CpuUtilization()
     while (linestream >> cpu_element) {
       cpu_utilization.push_back(cpu_element);
     }
+    stream.close();
   }
   return cpu_utilization;
 }
 
 int LinuxParser::TotalProcesses()
 {
-  std::string key{"processes"};
+  const std::string key{"processes"};
   return findValueByKey<int>(key, kStatFilename);
 }
 
 int LinuxParser::RunningProcesses()
 {
-  std::string key{"procs_running"};
+  const std::string key{"procs_running"};
   return findValueByKey<int>(key, kStatFilename);
 }
 
 std::string LinuxParser::Command(int pid)
 {
-  std::string filename{'/' + std::to_string(pid) + kCmdlineFilename};
+  const std::string filename{'/' + std::to_string(pid) + kCmdlineFilename};
   return getValueOfFile<std::string>(filename);
 }
 
 std::string LinuxParser::Ram(int pid)
 {
   int ram = 0;
-  std::string key{"VmRSS:"};
-  std::string filename{'/' + std::to_string(pid) + kStatusFilename};
+  const std::string key{"VmRSS:"}; // VmSize is sum of all virtual memory, we want physical ram (VmRSS)
+  const std::string filename{'/' + std::to_string(pid) + kStatusFilename};
   ram = findValueByKey<int>(key, filename);
   return std::to_string(ram / 1000);
 }
 
 std::string LinuxParser::Uid(int pid)
 {
-  std::string key{"Uid:"};
-  std::string filename{'/' + std::to_string(pid) + kStatusFilename};
+  const std::string key{"Uid:"};
+  const std::string filename{'/' + std::to_string(pid) + kStatusFilename};
   return findValueByKey<std::string>(key, filename);
 }
 
@@ -190,8 +194,10 @@ std::string LinuxParser::User(int pid)
       linestream >> user >> x >> user_uid;
       if (user_uid == p_uid) {
         break;
+        stream.close();
       }
     }
+    stream.close();
   }
   return user;
 }
@@ -211,6 +217,7 @@ long LinuxParser::UpTime(int pid)
     }
     // The 21st element (0 indexed) is the process starttime
     linestream >> start_time;
+    stream.close();
   }
 
   // Get system uptime
