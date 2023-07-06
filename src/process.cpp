@@ -23,7 +23,11 @@ float Process::CpuUtilization()
 
 std::string Process::Command()
 {
-  return LinuxParser::Command(pid_);
+  std::string command = LinuxParser::Command(pid_);
+  if (command.length() > 50) {
+    command = command.substr(0, 50) + "...";
+  }
+  return command;
 }
 
 std::string Process::Ram() const
