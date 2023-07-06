@@ -159,40 +159,14 @@ std::vector<long> LinuxParser::CpuUtilization()
 
 int LinuxParser::TotalProcesses()
 {
-  int total_processes;
-  std::string identifier;
-  std::string line;
-  std::ifstream stream(kProcDirectory + kStatFilename);
-  if (stream.is_open()) {
-    while (std::getline(stream, line)) {
-      std::istringstream linestream(line);
-      linestream >> identifier;
-      if (identifier == "processes") {
-        linestream >> total_processes;
-        break;
-      }
-    }
-  }
-  return total_processes;
+  std::string key{"processes"};
+  return findValueByKey<int>(key, kStatFilename);
 }
 
 int LinuxParser::RunningProcesses()
 {
-  int running_processes;
-  std::string identifier;
-  std::string line;
-  std::ifstream stream(kProcDirectory + kStatFilename);
-  if (stream.is_open()) {
-    while (std::getline(stream, line)) {
-      std::istringstream linestream(line);
-      linestream >> identifier;
-      if (identifier == "procs_running") {
-        linestream >> running_processes;
-        break;
-      }
-    }
-  }
-  return running_processes;
+  std::string key{"procs_running"};
+  return findValueByKey<int>(key, kStatFilename);
 }
 
 std::string LinuxParser::Command(int pid)
@@ -208,39 +182,17 @@ std::string LinuxParser::Command(int pid)
 std::string LinuxParser::Ram(int pid)
 {
   int ram = 0;
-  std::string identifier;
-  std::string line;
-  std::ifstream stream(kProcDirectory + '/' + std::to_string(pid) + kStatusFilename);
-  if (stream.is_open()) {
-    while (std::getline(stream, line)) {
-      std::istringstream linestream(line);
-      linestream >> identifier;
-      if (identifier == "VmSize:") {
-        linestream >> ram;
-        break;
-      }
-    }
-  }
+  std::string key{"VmRSS:"};
+  std::string filename{'/' + std::to_string(pid) + kStatusFilename};
+  ram = findValueByKey<int>(key, filename);
   return std::to_string(ram / 1000);
 }
 
 std::string LinuxParser::Uid(int pid)
 {
-  std::string uid;
-  std::string identifier;
-  std::string line;
-  std::ifstream stream(kProcDirectory + '/' + std::to_string(pid) + kStatusFilename);
-  if (stream.is_open()) {
-    while (std::getline(stream, line)) {
-      std::istringstream linestream(line);
-      linestream >> identifier;
-      if (identifier == "Uid:") {
-        linestream >> uid;
-        break;
-      }
-    }
-  }
-  return uid;
+  std::string key{"Uid:"};
+  std::string filename{'/' + std::to_string(pid) + kStatusFilename};
+  return findValueByKey<std::string>(key, filename);
 }
 
 std::string LinuxParser::User(int pid)
