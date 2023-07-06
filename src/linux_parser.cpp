@@ -66,33 +66,17 @@ std::vector<int> LinuxParser::Pids()
 
 float LinuxParser::MemoryUtilization()
 {
-  std::string line;
-  float mem_total, mem_available;
-  std::ifstream stream(kProcDirectory + kMeminfoFilename);
-  if (stream.is_open()) {
-    std::string mem_name;
-    std::getline(stream, line);
-    std::istringstream linestream(line);
-    linestream >> mem_name >> mem_total;
-    std::getline(stream, line);
-    std::getline(stream, line);
-    std::istringstream linestream2(line);
-    linestream2 >> mem_name >> mem_available;
-  }
+  std::string memTotal = "MemTotal:";
+  std::string memAvailable = "MemAvailable:";
+  float mem_total = findValueByKey<float>(memTotal, kMeminfoFilename);
+  float mem_available = findValueByKey<float>(memAvailable, kMeminfoFilename);
   return (mem_total - mem_available) / mem_total;
 }
 
 long LinuxParser::UpTime()
 {
-  long uptime;
-  std::string line;
-  std::ifstream stream(kProcDirectory + kUptimeFilename);
-  if (stream.is_open()) {
-    std::getline(stream, line);
-    std::istringstream linestream(line);
-    linestream >> uptime;
-  }
-  return uptime;
+  std::string filename{kUptimeFilename};
+  return getValueOfFile<long>(filename);
 }
 
 long LinuxParser::Jiffies()
@@ -171,12 +155,8 @@ int LinuxParser::RunningProcesses()
 
 std::string LinuxParser::Command(int pid)
 {
-  std::string cmd_string;
-  std::ifstream stream(kProcDirectory + '/' + std::to_string(pid) + kCmdlineFilename);
-  if (stream.is_open()) {
-    std::getline(stream, cmd_string);
-  }
-  return cmd_string;
+  std::string filename{'/' + std::to_string(pid) + kCmdlineFilename};
+  return getValueOfFile<std::string>(filename);
 }
 
 std::string LinuxParser::Ram(int pid)
