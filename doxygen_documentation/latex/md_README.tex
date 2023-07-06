@@ -1,0 +1,29 @@
+System Monitor Project in the Object Oriented Programming Course of the \href{https://www.udacity.com/course/c-plus-plus-nanodegree--nd213}{\texttt{ Udacity C++ Nanodegree Program}}.
+
+Follow along with the classroom lessons to complete the project! Important information about where to find the data on linux for the system monitor is \mbox{\hyperlink{md_project_info}{here}}.
+
+\hypertarget{md_README_autotoc_md21}{}\doxysection{Udacity Linux Workspace}\label{md_README_autotoc_md21}
+\href{https://www.udacity.com/}{\texttt{ Udacity}} provides a browser-\/based Linux \href{https://engineering.udacity.com/creating-a-gpu-enhanced-virtual-desktop-for-udacity-497bdd91a505}{\texttt{ Workspace}} for students.
+
+You are welcome to develop this project on your local machine, and you are not required to use the Udacity Workspace. However, the Workspace provides a convenient and consistent Linux development environment we encourage you to try.\hypertarget{md_README_autotoc_md22}{}\doxysection{ncurses}\label{md_README_autotoc_md22}
+\href{https://www.gnu.org/software/ncurses/}{\texttt{ ncurses}} is a library that facilitates text-\/based graphical output in the terminal. This project relies on ncurses for display output.
+
+Within the Udacity Workspace, {\ttfamily .student\+\_\+bashrc} automatically installs ncurses every time you launch the Workspace.
+
+If you are not using the Workspace, install ncurses within your own Linux environment\+: {\ttfamily sudo apt install libncurses5-\/dev libncursesw5-\/dev}\hypertarget{md_README_autotoc_md23}{}\doxysection{Make}\label{md_README_autotoc_md23}
+This project uses \href{https://www.gnu.org/software/make/}{\texttt{ Make}}. The Makefile has four targets\+:
+\begin{DoxyItemize}
+\item {\ttfamily build} compiles the source code and generates an executable
+\item {\ttfamily format} applies \href{https://clang.llvm.org/docs/ClangFormat.html}{\texttt{ Clang\+Format}} to style the source code
+\item {\ttfamily debug} compiles the source code and generates an executable, including debugging symbols
+\item {\ttfamily clean} deletes the {\ttfamily build/} directory, including all of the build artifacts
+\end{DoxyItemize}\hypertarget{md_README_autotoc_md24}{}\doxysection{Instructions}\label{md_README_autotoc_md24}
+
+\begin{DoxyEnumerate}
+\item Clone the project repository\+: {\ttfamily git clone \href{https://github.com/udacity/CppND-System-Monitor-Project-Updated.git}{\texttt{ https\+://github.\+com/udacity/\+Cpp\+N\+D-\/\+System-\/\+Monitor-\/\+Project-\/\+Updated.\+git}}}
+\item Build the project\+: {\ttfamily make build}
+\item Run the resulting executable\+: {\ttfamily ./build/monitor} 
+\item Follow along with the lesson.
+\item Implement the {\ttfamily System}, {\ttfamily Process}, and {\ttfamily Processor} classes, as well as functions within the {\ttfamily Linux\+Parser} namespace.
+\item Submit! 
+\end{DoxyEnumerate}
